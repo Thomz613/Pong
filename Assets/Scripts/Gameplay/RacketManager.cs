@@ -10,15 +10,6 @@ public class RacketManager : MonoBehaviour {
 
     ControllerBase _racketController;
 
-    /// <summary>
-    /// Set the controller used with this racket.
-    /// </summary>
-    /// <param name="controller">The controller used with this racket</param>
-    public void SetController(ControllerBase controller)
-    {
-        _racketController = controller;
-    }
-
     void OnTriggerEnter(Collider other)
     {
         _racketController.OnTriggerEnter(other);
@@ -27,5 +18,15 @@ public class RacketManager : MonoBehaviour {
     void OnTriggerExit(Collider other)
     {
         _racketController.OnTriggerExit(other);
+    }
+
+
+    /// <summary>
+    /// Set the controller used with this racket.
+    /// </summary>
+    /// <param name="controller">The controller used with this racket</param>
+    public void SetController(ControllerBase controller)
+    {
+        _racketController = controller;
     }
 }
