@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Ball
+  - Racket
+  - Upper Wall
+  - Lower Wall
+  - Goal
   layers:
   - Default
   - TransparentFX
