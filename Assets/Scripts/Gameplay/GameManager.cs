@@ -97,7 +97,11 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        // No sound should be heared while in the main menu
+        SoundManager.Instance.Mute();
+        // Show the menu
         _mainMenu.gameObject.SetActive(true);
+        // Start an AI game in background
         StartMockGame();
     }
 
@@ -116,12 +120,15 @@ public class GameManager : MonoBehaviour
     /// <param name="rightPlayer">The right player controller</param>
     void AssignPlayers(ControllerBase leftPlayer, ControllerBase rightPlayer)
     {
+        // Generate new Ids
         int leftPlayerId = GetNewPlayerId();
         int rightPlayerId = GetNewPlayerId();
 
+        // Create players
         _leftPlayer = new Player(leftPlayerId, leftPlayer);
         _rightPlayer = new Player(rightPlayerId, rightPlayer);
 
+        // Assign controllers to rackets
         _leftRacket.SetController(_leftPlayer.Controller);
         _rightRacket.SetController(_rightPlayer.Controller);
     }
@@ -137,9 +144,12 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Serve in a random clamped direction
     /// </summary>
-    void FirstServe()
+    IEnumerator FirstServe()
     {
+        // Set speed
         _ball.SetBall(_ballSpeed);
+        // Set ball position
+        _ball.transform.position = _middlePoint.position;
 
         // Random direction
         Vector3 randomDirection = BallManager.RandomDirection(_serviceHalfMaxAngle, _ball.transform);
@@ -150,6 +160,8 @@ public class GameManager : MonoBehaviour
             randomDirection.x = -randomDirection.x;
         }
 
+        // Wait and serve
+        yield return new WaitForSeconds(_timeBetweenRounds);
         _ball.Serve(_middlePoint.position, randomDirection);
     }
 
@@ -179,6 +191,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void PauseGame()
     {
+        // Only pause game if no other menu is shown
         if (!_mainMenu.gameObject.activeSelf && !_pauseMenu.gameObject.activeSelf)
         {
             Time.timeScale = 0f;
@@ -193,6 +206,7 @@ public class GameManager : MonoBehaviour
     /// <param name="id">The id of the goal triggered</param>
     public void PlayerScored(int id)
     {
+        // Update player score
         if (id == _leftPlayer.Id)
         {
             _rightPlayer.AddPoint();
@@ -206,7 +220,9 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Unknown player id found when setting score " + id);
         }
 
+        // Update user interface
         UpdatePlayerScoreText(id);
+        // Start a new round
         StartCoroutine(StartNewRound(id));
     }
 
@@ -215,6 +231,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ResumeGame()
     {
+        // ResumeGame should only be called when the pause menu is open
         if (_pauseMenu.gameObject.activeSelf && !_mainMenu.gameObject.activeSelf)
         {
             _pauseMenu.gameObject.SetActive(false);
@@ -227,11 +244,14 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ReturnToMainMenu()
     {
+        // Close pause menu and show main menu
         _mainMenu.gameObject.SetActive(true);
         _pauseMenu.gameObject.SetActive(false);
 
         Time.timeScale = 1f;
 
+        // The main menu will be shown and a mock game will start. Mute the sound
+        SoundManager.Instance.Mute();
         StartMockGame();
     }
 
@@ -240,7 +260,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void SetGoals()
     {
-        // TODO: Debug
         _leftGoal.SetId(_leftPlayer.Id);
         _rightGoal.SetId(_rightPlayer.Id);
     }
@@ -259,12 +278,14 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void StartMockGame()
     {
+        // Create controllers
         int aiId = -1;
         ControllerAI leftPlayerController = new ControllerAI(aiId, ControllerAI.Difficulty.Normal, _ball.transform);
         ControllerAI rightPlayerController = new ControllerAI(aiId, ControllerAI.Difficulty.Normal, _ball.transform);
 
+        // Assign controllers to players and start the mock game
         InitGame(leftPlayerController, rightPlayerController);
-        FirstServe();
+        StartCoroutine(FirstServe());
     }
 
     /// <summary>
@@ -275,7 +296,10 @@ public class GameManager : MonoBehaviour
     public void StartNewGame(ControllerBase leftPlayerController, ControllerBase rightPlayerController)
     {
         InitGame(leftPlayerController, rightPlayerController);
-        FirstServe();
+
+        // The game will start unmute the sound
+        SoundManager.Instance.UnMunte();
+        StartCoroutine(FirstServe());
     }
 
     /// <summary>

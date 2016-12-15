@@ -80,21 +80,20 @@ public class BallManager : MonoBehaviour
     /// <param name="other">The collider on which the ball collided</param>
     void ResolveCollision(Collider other)
     {
-        // TODO: Glitch? No "else if" to handle multiple collisions ?
         if (other.CompareTag("Upper Wall") || other.CompareTag("Lower Wall"))
         {
             BounceOnWall();
-            // TODO: Play SFX
+            SoundManager.Instance.PlayWallBounceSFX();
         }
         if (other.CompareTag("Racket"))
         {
             BounceOnRacket(other);
-            // TODO: Play SFX
+            SoundManager.Instance.PlayRacketBounceSFX();
         }
         if (other.CompareTag("Goal"))
         {
             GoalScored();
-            // TODO: Play SFX
+            SoundManager.Instance.PlayGoalSFX();
         }
     }
 

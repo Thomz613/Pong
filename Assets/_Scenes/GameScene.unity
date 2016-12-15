@@ -976,6 +976,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 433288489}
   - 114: {fileID: 433288488}
+  - 114: {fileID: 433288491}
+  - 82: {fileID: 433288490}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1006,8 +1008,8 @@ MonoBehaviour:
   _playerRacketSpeed: 20
   _ballSpeed: 30
   _timeBetweenRounds: 2
-  _pauseMenu: {fileID: 692740444}
   _mainMenu: {fileID: 1034278302}
+  _pauseMenu: {fileID: 692740444}
 --- !u!4 &433288489
 Transform:
   m_ObjectHideFlags: 0
@@ -1021,6 +1023,95 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!82 &433288490
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 433288487}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+--- !u!114 &433288491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 433288487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2646b62ce54bff54fb88dc176d1fae8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSource: {fileID: 433288490}
+  _sfxWallBounce: {fileID: 8300000, guid: 613bae390370f3746bbaedae631fd678, type: 3}
+  _sfxRacketBounce: {fileID: 8300000, guid: 5e6f72220d16dd2478cc1d042288909f, type: 3}
+  _sfxGoal: {fileID: 8300000, guid: 4be0ef5b2acd86447b2f96439e0bb70f, type: 3}
 --- !u!1 &549777534
 GameObject:
   m_ObjectHideFlags: 0
