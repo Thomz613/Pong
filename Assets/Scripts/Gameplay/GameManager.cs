@@ -50,6 +50,13 @@ public class GameManager : MonoBehaviour
     float _timeBetweenRounds = 5f;
 
 
+    [SerializeField]
+    Transform _mainMenu;
+
+    [SerializeField]
+    Transform _pauseMenu;
+
+
 
     Player _leftPlayer;
     Player _rightPlayer;
@@ -65,6 +72,12 @@ public class GameManager : MonoBehaviour
     {
         get { return _ball; }
         private set { _ball = value; }
+    }
+
+    public float PlayerRacketSpeed
+    {
+        get { return _playerRacketSpeed; }
+        private set { _playerRacketSpeed = value; }
     }
 
     void Awake()
@@ -84,22 +97,23 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        //// TODO: Debug
-        //ControllerBase leftController = new ControllerHuman(0, ControllerBase.ControllerType.Human, _playerRacketSpeed);
-        //ControllerBase rightController = new ControllerAI(1, ControllerAI.Difficulty.Normal, _ball.transform);
-
-        //InitGame(leftController, rightController);
-        //FirstServe();
-
+        _mainMenu.gameObject.SetActive(true);
         StartMockGame();
     }
 
     void Update()
     {
+        UpdateInput();
+
         UpdateBall();
         UpdateRackets();
     }
 
+    /// <summary>
+    /// Create players and assign their controllers to the rackets
+    /// </summary>
+    /// <param name="leftPlayer">The left player controller</param>
+    /// <param name="rightPlayer">The right player controller</param>
     void AssignPlayers(ControllerBase leftPlayer, ControllerBase rightPlayer)
     {
         int leftPlayerId = GetNewPlayerId();
@@ -112,6 +126,17 @@ public class GameManager : MonoBehaviour
         _rightRacket.SetController(_rightPlayer.Controller);
     }
 
+    /// <summary>
+    /// Quit the game
+    /// </summary>
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
+
+    /// <summary>
+    /// Serve in a random clamped direction
+    /// </summary>
     void FirstServe()
     {
         _ball.SetBall(_ballSpeed);
@@ -128,16 +153,37 @@ public class GameManager : MonoBehaviour
         _ball.Serve(_middlePoint.position, randomDirection);
     }
 
+    /// <summary>
+    /// Gives an unnused id for a new player
+    /// </summary>
+    /// <returns></returns>
     int GetNewPlayerId()
     {
         return _playersIdsCounter++;
     }
 
+    /// <summary>
+    /// Init Game parameters : players, goals and scores
+    /// </summary>
+    /// <param name="leftPlayerController"></param>
+    /// <param name="rightPlayerController"></param>
     void InitGame(ControllerBase leftPlayerController, ControllerBase rightPlayerController)
     {
         AssignPlayers(leftPlayerController, rightPlayerController);
         SetGoals();
         SetPlayersScoreTexts();
+    }
+
+    /// <summary>
+    /// Show Pause menu and pauses game progression
+    /// </summary>
+    public void PauseGame()
+    {
+        if (!_mainMenu.gameObject.activeSelf && !_pauseMenu.gameObject.activeSelf)
+        {
+            Time.timeScale = 0f;
+            _pauseMenu.gameObject.SetActive(true);
+        }
     }
 
     /// <summary>
@@ -165,6 +211,31 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Close pause menu and continue playing
+    /// </summary>
+    public void ResumeGame()
+    {
+        if (_pauseMenu.gameObject.activeSelf && !_mainMenu.gameObject.activeSelf)
+        {
+            _pauseMenu.gameObject.SetActive(false);
+            Time.timeScale = 1f;
+        }
+    }
+
+    /// <summary>
+    /// Stop the current game and shown the main menu.
+    /// </summary>
+    public void ReturnToMainMenu()
+    {
+        _mainMenu.gameObject.SetActive(true);
+        _pauseMenu.gameObject.SetActive(false);
+
+        Time.timeScale = 1f;
+
+        StartMockGame();
+    }
+
+    /// <summary>
     /// Set the goals ids. Goals ids matches players'
     /// </summary>
     void SetGoals()
@@ -174,12 +245,18 @@ public class GameManager : MonoBehaviour
         _rightGoal.SetId(_rightPlayer.Id);
     }
 
+    /// <summary>
+    /// Sets the score texts to the players' scores
+    /// </summary>
     void SetPlayersScoreTexts()
     {
         _leftPlayerScoreText.text = _leftPlayer.Score.ToString();
         _rightPlayerScoreText.text = _rightPlayer.Score.ToString();
     }
 
+    /// <summary>
+    /// Start a mock game with 2 AIs
+    /// </summary>
     void StartMockGame()
     {
         int aiId = -1;
@@ -190,12 +267,22 @@ public class GameManager : MonoBehaviour
         FirstServe();
     }
 
+    /// <summary>
+    /// Start a new game. Creates new players from given controllers, init everything then serve.
+    /// </summary>
+    /// <param name="leftPlayerController">The left player controller used</param>
+    /// <param name="rightPlayerController">The right player controller used</param>
     public void StartNewGame(ControllerBase leftPlayerController, ControllerBase rightPlayerController)
     {
         InitGame(leftPlayerController, rightPlayerController);
         FirstServe();
     }
 
+    /// <summary>
+    /// Start a new round afeter a brief delay
+    /// </summary>
+    /// <param name="id">The id of the player who will serve</param>
+    /// <returns></returns>
     IEnumerator StartNewRound(int id)
     {
         // Wait before service
@@ -221,6 +308,17 @@ public class GameManager : MonoBehaviour
     void UpdateBall()
     {
         _ball.UpdateBallPosition();
+    }
+    
+    /// <summary>
+    /// Handles the keyboard
+    /// </summary>
+    void UpdateInput()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            PauseGame();
+        }
     }
 
     /// <summary>
