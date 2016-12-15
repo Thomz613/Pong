@@ -488,6 +488,10 @@ MonoBehaviour:
   _rightGoal: {fileID: 108329324}
   _leftPlayerScoreText: {fileID: 1129567966}
   _rightPlayerScoreText: {fileID: 33988568}
+  _serviceHalfMaxAngle: 45
+  _playerRacketSpeed: 20
+  _ballSpeed: 30
+  _timeBetweenRounds: 2
 --- !u!4 &433288489
 Transform:
   m_ObjectHideFlags: 0

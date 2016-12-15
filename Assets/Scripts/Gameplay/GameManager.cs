@@ -46,8 +46,14 @@ public class GameManager : MonoBehaviour
     float _ballSpeed = 30f;
 
 
+    [SerializeField]
+    float _timeBetweenRounds = 5f;
+
+
+
     Player _leftPlayer;
     Player _rightPlayer;
+
 
     public static GameManager Instance
     {
@@ -78,12 +84,14 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        ControllerBase leftController = new ControllerHuman(0, ControllerBase.ControllerType.Human, _playerRacketSpeed);
-        ControllerBase rightController = new ControllerAI(1, ControllerAI.Difficulty.Normal, _ball.transform);
+        //// TODO: Debug
+        //ControllerBase leftController = new ControllerHuman(0, ControllerBase.ControllerType.Human, _playerRacketSpeed);
+        //ControllerBase rightController = new ControllerAI(1, ControllerAI.Difficulty.Normal, _ball.transform);
 
-        InitGame(leftController, rightController);
-        FirstServe();
+        //InitGame(leftController, rightController);
+        //FirstServe();
 
+        StartMockGame();
     }
 
     void Update()
@@ -132,12 +140,6 @@ public class GameManager : MonoBehaviour
         SetPlayersScoreTexts();
     }
 
-    void SetPlayersScoreTexts()
-    {
-        _leftPlayerScoreText.text = _leftPlayer.Score.ToString();
-        _rightPlayerScoreText.text = _rightPlayer.Score.ToString();
-    }
-
     /// <summary>
     /// Player scored event. Score is updated and new round will start after a few seconds.
     /// Left goald Id mathces left player Id. If left Id is triggered, it's the right player who scored
@@ -159,6 +161,7 @@ public class GameManager : MonoBehaviour
         }
 
         UpdatePlayerScoreText(id);
+        StartCoroutine(StartNewRound(id));
     }
 
     /// <summary>
@@ -169,6 +172,47 @@ public class GameManager : MonoBehaviour
         // TODO: Debug
         _leftGoal.SetId(_leftPlayer.Id);
         _rightGoal.SetId(_rightPlayer.Id);
+    }
+
+    void SetPlayersScoreTexts()
+    {
+        _leftPlayerScoreText.text = _leftPlayer.Score.ToString();
+        _rightPlayerScoreText.text = _rightPlayer.Score.ToString();
+    }
+
+    void StartMockGame()
+    {
+        int aiId = -1;
+        ControllerAI leftPlayerController = new ControllerAI(aiId, ControllerAI.Difficulty.Normal, _ball.transform);
+        ControllerAI rightPlayerController = new ControllerAI(aiId, ControllerAI.Difficulty.Normal, _ball.transform);
+
+        InitGame(leftPlayerController, rightPlayerController);
+        FirstServe();
+    }
+
+    public void StartNewGame(ControllerBase leftPlayerController, ControllerBase rightPlayerController)
+    {
+        InitGame(leftPlayerController, rightPlayerController);
+        FirstServe();
+    }
+
+    IEnumerator StartNewRound(int id)
+    {
+        // Wait before service
+        yield return new WaitForSeconds(_timeBetweenRounds);
+
+        Vector3 randomDirection = BallManager.RandomDirection(_serviceHalfMaxAngle, _ball.transform);
+        // The player who won the last round "will serve". The ball direction should not be towars its goal
+        if(id == _leftPlayer.Id)
+        {
+            randomDirection.x = -randomDirection.x;
+        }
+        else if(id != _leftPlayer.Id && id != _rightPlayer.Id)
+        {
+            Debug.LogError("Unknown player id found when serving " + id);
+        }
+
+        _ball.Serve(_middlePoint.position, randomDirection);
     }
 
     /// <summary>
