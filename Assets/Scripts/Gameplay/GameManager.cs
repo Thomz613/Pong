@@ -61,6 +61,8 @@ public class GameManager : MonoBehaviour
     Player _leftPlayer;
     Player _rightPlayer;
 
+    float _racketsDistance;
+
 
     public static GameManager Instance
     {
@@ -80,6 +82,12 @@ public class GameManager : MonoBehaviour
         private set { _playerRacketSpeed = value; }
     }
 
+    public float RacketsDistance
+    {
+        get { return _racketsDistance; }
+        private set { _racketsDistance = value; }
+    }
+
     void Awake()
     {
         // Singleton behavior
@@ -97,6 +105,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        // Compute the distance between the two rackets
+        ComputeRacketsDistance();
         // No sound should be heared while in the main menu
         SoundManager.Instance.Mute();
         // Show the menu
@@ -131,6 +141,15 @@ public class GameManager : MonoBehaviour
         // Assign controllers to rackets
         _leftRacket.SetController(_leftPlayer.Controller);
         _rightRacket.SetController(_rightPlayer.Controller);
+    }
+
+    /// <summary>
+    /// Compute the horizontal distance between the two rackets and sets _racketsDistance.
+    /// </summary>
+    void ComputeRacketsDistance()
+    {
+        float distance = _leftRacket.transform.position.x - _rightRacket.transform.position.x;
+        _racketsDistance = Mathf.Abs(distance);
     }
 
     /// <summary>
@@ -280,8 +299,8 @@ public class GameManager : MonoBehaviour
     {
         // Create controllers
         int aiId = -1;
-        ControllerAI leftPlayerController = new ControllerAI(aiId, ControllerAI.Difficulty.Normal, _ball.transform);
-        ControllerAI rightPlayerController = new ControllerAI(aiId, ControllerAI.Difficulty.Normal, _ball.transform);
+        ControllerAI leftPlayerController = new ControllerAI(aiId, ControllerAI.Difficulty.Normal, _racketsDistance, _ball.transform);
+        ControllerAI rightPlayerController = new ControllerAI(aiId, ControllerAI.Difficulty.Normal, _racketsDistance, _ball.transform);
 
         // Assign controllers to players and start the mock game
         InitGame(leftPlayerController, rightPlayerController);

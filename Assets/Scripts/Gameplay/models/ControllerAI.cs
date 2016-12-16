@@ -4,24 +4,43 @@ using System;
 
 public class ControllerAI : ControllerBase
 {
+    /// <summary>
+    /// This coefficient is used to compute a ratio of the distance between the two rackets.
+    /// Used to let the racket not always follow the ball.
+    /// Its value should stay between 0 - 1.
+    /// </summary>
+    static float MaxDistanceCoefficient = 0.75f;
     #region Enums
 
     public enum Difficulty
     {
         Easy = 10,
-        Normal = 15,
-        Hard = 20
+        Normal = 11,
+        Hard = 13
     }
 
     #endregion
 
     Transform _ball;
+    float _maxTrackingDistance;
 
 
-    public ControllerAI(int id, Difficulty difficulty, Transform ball)
+    public ControllerAI(int id, Difficulty difficulty, float racketsDistance, Transform ball)
         : base(id, ControllerType.AI, (float)difficulty)
     {
         _ball = ball;
+        _maxTrackingDistance = racketsDistance * MaxDistanceCoefficient;
+    }
+
+    /// <summary>
+    /// Check if the ball in in range of the racket (i.e. in the max tracking distance range).
+    /// </summary>
+    /// <param name="racket">The racket</param>
+    /// <returns>True if in range, else either</returns>
+    bool BallInRange(Transform racket)
+    {
+        float ballDistance = _ball.position.x - racket.position.x;
+        return Mathf.Abs(ballDistance) < _maxTrackingDistance;
     }
 
     /// <summary>
@@ -47,7 +66,7 @@ public class ControllerAI : ControllerBase
         }
 
         // Then move the racket if movement is allowed
-        if(AllowMovement(translationValue))
+        if(AllowMovement(translationValue) && BallInRange(racket))
         {
             Vector3 translationVector = new Vector3(0, 0, translationValue);
             racket.Translate(translationVector);
