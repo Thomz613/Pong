@@ -132,8 +132,10 @@ public class UIManager : MonoBehaviour
     {
         // Default controllers
         Transform ball = GameManager.Instance.Ball.transform;
-        ControllerBase leftPlayerController = new ControllerAI(0, ControllerAI.Difficulty.Normal, ball);
-        ControllerBase rightPlayerController = new ControllerAI(1, ControllerAI.Difficulty.Normal, ball);
+        float racketsDistance = GameManager.Instance.RacketsDistance;
+
+        ControllerBase leftPlayerController = new ControllerAI(0, ControllerAI.Difficulty.Normal, racketsDistance, ball);
+        ControllerBase rightPlayerController = new ControllerAI(1, ControllerAI.Difficulty.Normal, racketsDistance, ball);
 
         float playerRacketSpeed = GameManager.Instance.PlayerRacketSpeed;
 
@@ -146,7 +148,7 @@ public class UIManager : MonoBehaviour
         }
         else if(_leftPlayerType == Ai)
         {
-            leftPlayerController = new ControllerAI(playerId, _difficulty, ball);
+            leftPlayerController = new ControllerAI(playerId, _difficulty, racketsDistance, ball);
         }
         else
         {
@@ -163,7 +165,7 @@ public class UIManager : MonoBehaviour
         }
         else if (_rightPlayerType == Ai)
         {
-            rightPlayerController = new ControllerAI(playerId, _difficulty, ball);
+            rightPlayerController = new ControllerAI(playerId, _difficulty, racketsDistance, ball);
         }
         else
         {
