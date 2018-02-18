@@ -134,8 +134,8 @@ public class UIManager : MonoBehaviour
         Transform ball = GameManager.Instance.Ball.transform;
         float racketsDistance = GameManager.Instance.RacketsDistance;
 
-        ControllerBase leftPlayerController = new ControllerAI(0, ControllerAI.Difficulty.Normal, racketsDistance, ball);
-        ControllerBase rightPlayerController = new ControllerAI(1, ControllerAI.Difficulty.Normal, racketsDistance, ball);
+        ControllerBase leftPlayerController = new ControllerAI(0, ControllerAI.Difficulty.Normal, racketsDistance, GameManager.Instance.LeftRacketInitialPosition, ball);
+        ControllerBase rightPlayerController = new ControllerAI(1, ControllerAI.Difficulty.Normal, racketsDistance, GameManager.Instance.RightRacketInitialPosition, ball);
 
         float playerRacketSpeed = GameManager.Instance.PlayerRacketSpeed;
 
@@ -144,11 +144,11 @@ public class UIManager : MonoBehaviour
         // Create racket controller for the left player using chosen parameters
         if(_leftPlayerType == Human)
         {
-            leftPlayerController = new ControllerHuman(playerId, ControllerBase.ControllerType.Human, playerRacketSpeed);
+            leftPlayerController = new ControllerHuman(playerId, ControllerBase.ControllerType.Human, playerRacketSpeed, GameManager.Instance.LeftRacketInitialPosition);
         }
         else if(_leftPlayerType == Ai)
         {
-            leftPlayerController = new ControllerAI(playerId, _difficulty, racketsDistance, ball);
+            leftPlayerController = new ControllerAI(playerId, _difficulty, racketsDistance, GameManager.Instance.LeftRacketInitialPosition, ball);
         }
         else
         {
@@ -161,11 +161,11 @@ public class UIManager : MonoBehaviour
         // Create racket controller for the right player using chosen parameters
         if (_rightPlayerType == Human)
         {
-            rightPlayerController = new ControllerHuman(playerId, ControllerBase.ControllerType.Human, playerRacketSpeed);
+            rightPlayerController = new ControllerHuman(playerId, ControllerBase.ControllerType.Human, playerRacketSpeed, GameManager.Instance.RightRacketInitialPosition);
         }
         else if (_rightPlayerType == Ai)
         {
-            rightPlayerController = new ControllerAI(playerId, _difficulty, racketsDistance, ball);
+            rightPlayerController = new ControllerAI(playerId, _difficulty, racketsDistance, GameManager.Instance.RightRacketInitialPosition, ball);
         }
         else
         {

@@ -12,8 +12,8 @@ public class ControllerHuman : ControllerBase
     /// </summary>
     static string PlayerSuffix = "_P";
 
-    public ControllerHuman(int id, ControllerType deviceType, float speed)
-        : base(id, deviceType, speed)
+    public ControllerHuman(int id, ControllerType deviceType, float speed, Vector3 initialPosition)
+        : base(id, deviceType, speed, initialPosition)
     {
     }
 
@@ -23,7 +23,6 @@ public class ControllerHuman : ControllerBase
     /// <param name="racket">The racket</param>
     public override void ControlRacket(Transform racket)
     {
-
         float translationValue = DirectionOfMovement(racket) * _speed * Time.deltaTime;
 
         // Move the racket only if movement is allowed
@@ -45,4 +44,9 @@ public class ControllerHuman : ControllerBase
         string verticalAxis = "Vertical" + PlayerSuffix + _id;
         return Input.GetAxis(verticalAxis);
     }
+	
+	public override void ResetRacketPosition(Transform racket)
+	{
+		
+	}
 }

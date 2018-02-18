@@ -2,6 +2,9 @@
 using System.Collections;
 using System;
 
+/// <summary>
+/// Simple AI script. Will follow the ball at a fixed speed and distance
+/// </summary>
 public class ControllerAI : ControllerBase
 {
     /// <summary>
@@ -14,9 +17,9 @@ public class ControllerAI : ControllerBase
 
     public enum Difficulty
     {
-        Easy = 10,
-        Normal = 11,
-        Hard = 13
+        Easy = 11,
+        Normal = 12,
+        Hard = 15
     }
 
     #endregion
@@ -25,8 +28,8 @@ public class ControllerAI : ControllerBase
     float _maxTrackingDistance;
 
 
-    public ControllerAI(int id, Difficulty difficulty, float racketsDistance, Transform ball)
-        : base(id, ControllerType.AI, (float)difficulty)
+    public ControllerAI(int id, Difficulty difficulty, float racketsDistance, Vector3 initialPosition, Transform ball)
+        : base(id, ControllerType.AI, (float)difficulty, initialPosition)
     {
         _ball = ball;
         _maxTrackingDistance = racketsDistance * MaxDistanceCoefficient;
@@ -82,4 +85,9 @@ public class ControllerAI : ControllerBase
     {
         return (_ball.position - racket.position).z;
     }
+	
+	public override void ResetRacketPosition(Transform racket)
+	{
+		racket.position = _initialPosition;
+	}
 }

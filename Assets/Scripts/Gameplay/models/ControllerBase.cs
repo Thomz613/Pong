@@ -22,6 +22,7 @@ public abstract class ControllerBase
     protected int _id;  // Used only by players to use the right axes in the input manager
     protected ControllerType _deviceType;
     protected float _speed;
+	protected Vector3 _initialPosition;
 
     protected bool _canMoveDown;
     protected bool _canMoveUp;
@@ -45,15 +46,22 @@ public abstract class ControllerBase
         get { return _speed; }
         protected set { _speed = value; }
     }
+	
+	public Vector3 InitialPosition
+	{
+		get { return _initialPosition; }
+		set { _initialPosition = value; }
+	}
 
     #endregion
 
-    public ControllerBase(int id, ControllerType deviceType, float speed)
+    public ControllerBase(int id, ControllerType deviceType, float speed, Vector3 initialPosition)
     {
         _id = id;
         _deviceType = deviceType;
         _speed = speed;
-
+		_initialPosition = initialPosition;
+		
         _canMoveDown = true;
         _canMoveUp = true;
     }
@@ -89,6 +97,11 @@ public abstract class ControllerBase
     /// <param name="racket">The racket</param>
     /// <returns></returns>
     public abstract float DirectionOfMovement(Transform racket);
+	
+	/// <summary>
+    /// Reset the racket position to its initial value
+    /// </summary>
+	public abstract void ResetRacketPosition(Transform racket);
 
     public virtual void OnTriggerEnter(Collider other)
     {
