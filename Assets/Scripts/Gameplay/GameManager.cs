@@ -87,6 +87,18 @@ public class GameManager : MonoBehaviour
         get { return _racketsDistance; }
         private set { _racketsDistance = value; }
     }
+	
+	public Vector3 LeftRacketInitialPosition
+    {
+        get { return _leftRacket.InitialPosition; }
+        private set { }
+    }
+
+    public Vector3 RightRacketInitialPosition
+    {
+        get { return _rightRacket.InitialPosition; }
+        private set { }
+    }
 
     void Awake()
     {
@@ -201,6 +213,7 @@ public class GameManager : MonoBehaviour
     void InitGame(ControllerBase leftPlayerController, ControllerBase rightPlayerController)
     {
         AssignPlayers(leftPlayerController, rightPlayerController);
+		ResetRacketsPositions();
         SetGoals();
         SetPlayersScoreTexts();
     }
@@ -299,8 +312,8 @@ public class GameManager : MonoBehaviour
     {
         // Create controllers
         int aiId = -1;
-        ControllerAI leftPlayerController = new ControllerAI(aiId, ControllerAI.Difficulty.Normal, _racketsDistance, _ball.transform);
-        ControllerAI rightPlayerController = new ControllerAI(aiId, ControllerAI.Difficulty.Normal, _racketsDistance, _ball.transform);
+        ControllerAI leftPlayerController = new ControllerAI(aiId, ControllerAI.Difficulty.Normal, _racketsDistance, _leftRacket.InitialPosition, _ball.transform);
+        ControllerAI rightPlayerController = new ControllerAI(aiId, ControllerAI.Difficulty.Normal, _racketsDistance, _rightRacket.InitialPosition, _ball.transform);
 
         // Assign controllers to players and start the mock game
         InitGame(leftPlayerController, rightPlayerController);
@@ -330,6 +343,9 @@ public class GameManager : MonoBehaviour
     {
         // Wait before service
         yield return new WaitForSeconds(_timeBetweenRounds);
+		
+		// Reset AIs rackets positions
+        ResetRacketsPositions();
 
         Vector3 randomDirection = BallManager.RandomDirection(_serviceHalfMaxAngle, _ball.transform);
         // The player who won the last round "will serve". The ball direction should not be towars its goal
@@ -344,6 +360,15 @@ public class GameManager : MonoBehaviour
 
         _ball.Serve(_middlePoint.position, randomDirection);
     }
+	
+	/// <summary>
+    /// Move back the rackets to their initial position
+    /// </summary>
+	void ResetRacketsPositions()
+	{
+		_leftRacket.RacketController.ResetRacketPosition(_leftRacket.transform);
+		_rightRacket.RacketController.ResetRacketPosition(_rightRacket.transform);
+	}
 
     /// <summary>
     /// Updates the ball position using its manager
